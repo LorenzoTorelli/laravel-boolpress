@@ -8,7 +8,12 @@ use App\Post;
 class PostController extends Controller
 {
     public function index() {
-        $post = Post::all();
-        return response()->json ($post);
+        $post = Post::with("category")->get();
+        return response()->json($post);
+    }
+
+    public function show($slug) {
+        $post = Post::where("slug", $slug)->with("category")->first();
+        return response()->json($post);
     }
 }

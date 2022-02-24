@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Lista dei Post</h1>
+        <h1>Home Page</h1>
         <Posts/>
     </div>
 </template>
@@ -11,6 +11,7 @@ export default {
     name:"Home",
     components: {
         Posts, 
+    }
 }
 </script>
 
