@@ -1,6 +1,6 @@
 <template>
     <footer>
-        <h2>Sono il Footer</h2>
+        <!-- <h2>Sono il Footer</h2> -->
     </footer>
 </template>
 
