@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
 
 use App\Category;
 use App\Post;
@@ -18,7 +20,8 @@ class PostController extends Controller
         "content" => "required",
         "published" => "sometimes|accepted",
         "category_id" => "nullable|exists:categories,id", 
-        "tags" => "nullable|exists:tags,id"
+        "tags" => "nullable|exists:tags,id",
+        "image" => "nullable|image|mimes:jpeg,bmp,png|max:2048"
     ];
     /**
      * Display a listing of the resource.
@@ -61,7 +64,7 @@ class PostController extends Controller
         $newPost->title = $data['title']; 
         $newPost->content = $data["content"];
         $newPost->category_id = $data["category_id"];
-
+        
         if (isset($data["published"])) {
             $newPost->published = true;
         }
@@ -76,10 +79,15 @@ class PostController extends Controller
         }
         $newPost->slug = $slug;
         
+        if(isset($data["image"])) {
+            $postImage = Storage::put("uploads", $data["image"]);
+            $newPost->image = $postImage;
+        }
+
         $newPost->save();
 
         if (isset($data["tags"]) ) {
-            $newPost->tag()->sync($data["tags"]);
+            $newPost->tags()->sync($data["tags"]);
         }
 
         return redirect()->route("posts.show", $newPost->id);
@@ -104,8 +112,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        $tags = Tag::all();
+
         $categories = Category::all();
-        return view("admin.posts.edit", compact('post', 'categories'));
+        return view("admin.posts.edit", compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -142,7 +152,18 @@ class PostController extends Controller
         
         $post->published = isset($data["published"]);
 
+        if(isset($data["image"])) {
+            // cancello la vecchia image
+            Storage::delete($post->image);
+
+            $postImage = Storage::put("uploads", $data["image"]);
+            $newPost->image = $postImage;
+        }
         $post->save();
+
+        if (isset($data["tags"]) ) {
+            $post->tags()->sync($data["tags"]);
+        }
 
         return redirect()->route("posts.show", $post->id);
     }
@@ -155,6 +176,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if($post->image) {
+            Storage::delete($post->image);
+        }
         $post->delete();
 
         return redirect()->route("posts.index");

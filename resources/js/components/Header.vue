@@ -8,6 +8,9 @@
                  <li>
                     <router-link class="link" :to="{ name: 'about' }">About</router-link>
                 </li>
+                <li>
+                    <a href="/admin/home"> Areaprivata</a>
+                </li>
             </ul>
         </nav>
     </header>

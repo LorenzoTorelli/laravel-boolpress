@@ -3,8 +3,10 @@
 @section('content')
 <div class="container">
     <h1 class="text-uppercase mb-5">Add new post </h1>
-    <form action="{{route('posts.store')}}" method="post" >
+    <form action="{{route('posts.store')}}" method="post"  enctype="multipart/form-data">
         @csrf
+
+        {{-- ########### SEZIONE DEL TITOLO ########### --}}
 
         <div class="form-group">
             <label for="title">Title</label>
@@ -13,6 +15,9 @@
                 <div class="alert alert-danger">{{$message}}</div>
             @enderror
         </div>
+
+
+        {{-- ########### SEZIONE DELLA CATEGORIA ########### --}}
 
         <div class="form-group">
             <label for="category">Category</label>
@@ -26,6 +31,9 @@
                     <div class="alert alert-danger">{{$message}}</div>
                 @enderror
         </div>
+
+        {{-- ########### SEZIONE DEL CONTENUTO DEL POST ########### --}}
+
         <div class="form-group">
             <label for="content">Content</label>
             <textarea class="form-control @error('content') is-invalid @enderror" name="content" id="content" cols="30" rows="10" placeholder="inserisci il contenuto"></textarea>
@@ -34,6 +42,9 @@
                 <div class="alert alert-danger">{{$message}}</div>
             @enderror
         </div>
+
+        {{-- ########### SEZIONE DEL PUBLISH ########### --}}
+
         <div class="form-group">
             <label for="published">Publish</label>
            <input type="checkbox" id="published" name="published">
@@ -42,21 +53,33 @@
                 <div class="alert alert-danger">{{$message}}</div>
             @enderror
         </div>
+
+        {{-- ########### SEZIONE DEI TAG ########### --}}
         <div class="form-group">
             <p>Tags</p>
             @foreach ($tags as $tag)
                 <div class="form-check form-check-inline">
-                    <input type="checkbox" id="{{$tag->slug}}"  class="form-check-input" name="tags[]" value="{{$tag->id}}">
+                    <input type="checkbox" id="{{$tag->slug}}"  class="form-check-input" name="tags[]" value="{{$tag->id}}" {{in_array($tag->id, old("tags", [])) ? 'checked' : ''}}>
                     <label  class="form-check-label" for="{{$tag->slug}}">{{$tag->title}}</label>
                 
-                    {{-- @error('content')
+                    @error('tags')
                         <div class="alert alert-danger">{{$message}}</div>
-                    @enderror --}}
+                    @enderror
                 </div>
             @endforeach
            
         </div>
+
+        {{-- ########### SEZIONE DELLE IMAGE ########### --}}
         
+        <div class="form-group">
+            <input class="form-control" type="file" id="image" name="image">
+            <label for="image" class="form-label"></label>
+            @error('image')
+                <div class="alert alert-danger">{{$message}}</div>
+            @enderror
+        </div>
+
        <button class="btn btn-success" type="submit" >Add to Database</button>
 
     </form>

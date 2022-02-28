@@ -4,6 +4,12 @@
     <div class="container">
         <a href="{{route("posts.index")}}"><button type="button" class="btn btn-secondary">List</button></a>
         <h1>{{$post->title}}</h1>
+        <div class="mb-3">
+            @if ($post->image) 
+                <img src="{{asset("storage/{$post->image} ")}}" alt="{{$post->title}}">
+                
+            @endif
+        </div>
         <p>{{$post->content}}</p>
         <div class="mb-3">
             <strong>Stato:</strong>
@@ -22,12 +28,12 @@
         </div>
 
             
-        {{-- <div class="mb-3">
+        <div class="mb-3">
             <strong>Tags</strong>
             @foreach ($post->tags as $tag)
-                <span class="badge badge-primary">{{$post->$tag->title}}</span>
+                <span class="badge badge-primary">{{$tag->title}}</span>
             @endforeach
-        </div> --}}
+        </div>
         
     </div>
 @endsection

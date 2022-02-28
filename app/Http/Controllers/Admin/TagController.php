@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Tag;
+use Illuminate\Support\Str;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Tag;
 
 class TagController extends Controller
 {
+    protected $validationRule = [
+        "title" => "required|string|max:100",
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,8 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        $tags = Tag::all();
+        return view("admin.tags.index", compact("tags"));
     }
 
     /**
@@ -35,7 +41,24 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate($this->validationRule);
+        $data = $request->all();
+        $newTag = new Tag();
+        $newTag->title = $data['title']; 
+        
+        $slug = Str::of($newTag->title)->slug("-");
+        
+        $count = 1;
+
+        while( Tag::where("slug", $slug)->first()) {
+            $slug = Str::of($newTag->title)->slug("-")."-{$count}";
+            $count++;
+        }
+        $newTag->slug = $slug;
+        $newTag->save();
+
+        return back();
+    
     }
 
     /**
@@ -80,6 +103,6 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag)
     {
-        //
-    }
+        $tag->delete();
+        return back();    }
 }
