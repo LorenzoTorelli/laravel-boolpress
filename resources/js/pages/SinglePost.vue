@@ -5,6 +5,18 @@
             <div class="img-container"><img :src="`/storage/${post.image}`" alt="post.title"></div>
             <h5 v-if="post.category">Categoria: {{post.category.title}}</h5>
             <p>{{post.content}}</p>
+            
+            <form @submit.prevent="addComment">
+                <div >
+                    <input type="text" id="name" placeholder="Inserisci il nome" v-model="formData.name"> 
+                    <input class="content"  type="textarea" id="content" placeholder="scrivi il tuo commento" v-model="formData.content">
+
+                </div>
+                <div>
+                    <button type="submit">Inserisci Commento</button>
+                </div>
+            </form>
+
         </div>
   </div>
 </template>
@@ -14,10 +26,22 @@ export default {
     name:"SinglePost",
     data() {
         return {
-            post: {}
+            post: {},
+            formData: {
+                name: '',
+                content:'',
+                postID:null,
+            },
         }
     },
-
+    methods: {
+        addComment() {
+            axios.post(`/api/comments`, this.formData).then((response) => { 
+                this.post = response.data;
+                this.formData.post_id = this.post.id;
+            })
+        }
+    }, 
     created() {
         // console.log(this.$route.params.slug);
         axios.get(`/api/posts/${this.$route.params.slug}`)
@@ -25,7 +49,7 @@ export default {
             //   console.log(response.data)
                 this.post = response.data;
             })
-    },   
+    }
 }
 </script>
 

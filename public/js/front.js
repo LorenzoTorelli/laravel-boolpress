@@ -2118,20 +2118,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "SinglePost",
   data: function data() {
     return {
-      post: {}
+      post: {},
+      formData: {
+        name: '',
+        content: '',
+        postID: null
+      }
     };
   },
+  methods: {
+    addComment: function addComment() {
+      var _this = this;
+
+      axios.post("/api/comments", this.formData).then(function (response) {
+        _this.post = response.data;
+        _this.formData.post_id = _this.post.id;
+      });
+    }
+  },
   created: function created() {
-    var _this = this;
+    var _this2 = this;
 
     // console.log(this.$route.params.slug);
     axios.get("/api/posts/".concat(this.$route.params.slug)).then(function (response) {
       //   console.log(response.data)
-      _this.post = response.data;
+      _this2.post = response.data;
     });
   }
 });
@@ -3646,10 +3673,89 @@ var render = function () {
         : _vm._e(),
       _vm._v(" "),
       _c("p", [_vm._v(_vm._s(_vm.post.content))]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          on: {
+            submit: function ($event) {
+              $event.preventDefault()
+              return _vm.addComment.apply(null, arguments)
+            },
+          },
+        },
+        [
+          _c("div", [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.formData.name,
+                  expression: "formData.name",
+                },
+              ],
+              attrs: {
+                type: "text",
+                id: "name",
+                placeholder: "Inserisci il nome",
+              },
+              domProps: { value: _vm.formData.name },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.formData, "name", $event.target.value)
+                },
+              },
+            }),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.formData.content,
+                  expression: "formData.content",
+                },
+              ],
+              staticClass: "content",
+              attrs: {
+                type: "textarea",
+                id: "content",
+                placeholder: "scrivi il tuo commento",
+              },
+              domProps: { value: _vm.formData.content },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.formData, "content", $event.target.value)
+                },
+              },
+            }),
+          ]),
+          _vm._v(" "),
+          _vm._m(0),
+        ]
+      ),
     ]),
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [
+      _c("button", { attrs: { type: "submit" } }, [
+        _vm._v("Inserisci Commento"),
+      ]),
+    ])
+  },
+]
 render._withStripped = true
 
 

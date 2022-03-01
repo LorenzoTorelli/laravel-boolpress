@@ -19,5 +19,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
+// Post API 
 Route::get("/posts", "Api\PostController@index");
 Route::get("/posts/{slug}", "Api\PostController@show");
+
+// Comments API 
+Route::get("/comments", "Api\CommentController@store");
